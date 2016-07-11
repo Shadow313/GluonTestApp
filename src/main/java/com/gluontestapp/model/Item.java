@@ -22,6 +22,7 @@
 //</editor-fold>
 package com.gluontestapp.model;
 
+import java.time.LocalDateTime;
 import javafx.beans.property.*;
 import javax.xml.bind.annotation.XmlElement;
 
@@ -37,7 +38,7 @@ public class Item {
 
     private StringProperty value;
 
-    private StringProperty date;
+    private ObjectProperty<LocalDateTime> date;
 
     public final void setId(Integer value) {
         id.set(value);
@@ -65,16 +66,16 @@ public class Item {
         return value;
     }
 
-    public final void setDate(String value) {
+    public final void setDate(LocalDateTime value) {
         date.set(value);
     }
 
     @XmlElement(name = "Date")
-    public final String getDate() {
+    public final LocalDateTime getDate() {
         return date.get();
     }
 
-    public final StringProperty dateProperty() {
+    public final ObjectProperty<LocalDateTime> dateProperty() {
         return date;
     }
 
@@ -85,7 +86,7 @@ public class Item {
      * @param value
      * @param date
      */
-    public Item(int id, String value, String date) {
+    public Item(int id, String value, LocalDateTime date) {
         this();
         this.id.set(id);
         this.value.set(value);
@@ -95,7 +96,7 @@ public class Item {
     public Item() {
         id = new SimpleIntegerProperty();
         value = new SimpleStringProperty();
-        date = new SimpleStringProperty();
+        date = new SimpleObjectProperty<>();
     }
 
     @Override

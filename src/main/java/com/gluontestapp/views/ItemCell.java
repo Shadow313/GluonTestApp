@@ -25,6 +25,7 @@ package com.gluontestapp.views;
 import com.gluonhq.charm.glisten.control.CharmListCell;
 import com.gluonhq.charm.glisten.control.ListTile;
 import com.gluontestapp.model.Item;
+import java.time.format.DateTimeFormatter;
 
 /**
  *
@@ -49,7 +50,7 @@ public class ItemCell extends CharmListCell<Item> {
     public void updateItem(Item item, boolean empty) {
         super.updateItem(item, empty);
         if (item != null && !empty) {
-            tile.textProperty().setAll(item.getValue(), item.getDate());
+            tile.textProperty().setAll(item.getValue(), item.getDate().format(DateTimeFormatter.ISO_DATE_TIME));
         }
         setGraphic(tile);
     }

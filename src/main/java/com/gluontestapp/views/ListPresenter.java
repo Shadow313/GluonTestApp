@@ -12,8 +12,12 @@ import com.gluonhq.connect.provider.RestClient;
 import com.gluontestapp.GluonTestApp;
 import com.gluontestapp.ItemsIterableInputConverter;
 import com.gluontestapp.model.Item;
-import java.time.LocalDateTime;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 
@@ -22,8 +26,18 @@ public class ListPresenter {
     @FXML
     private View list;
 
+    private IntegerProperty lastLoadMs;
+
     public void initialize() {
+        lastLoadMs = new SimpleIntegerProperty();
         list.setShowTransitionFactory(BounceInRightTransition::new);
+        Label loadTimeLabel = new Label("-");
+        lastLoadMs.addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+                loadTimeLabel.setText(newValue + "ms");
+            }
+        });
 
         list.showingProperty().addListener((obs, oldValue, newValue) -> {
             if (newValue) {
@@ -31,8 +45,18 @@ public class ListPresenter {
                 appBar.setNavIcon(MaterialDesignIcon.MENU.button(e
                         -> MobileApplication.getInstance().showLayer(GluonTestApp.MENU_LAYER)));
                 appBar.setTitleText("List");
+                appBar.getActionItems().add(loadTimeLabel);
+                appBar.getActionItems().add(MaterialDesignIcon.REFRESH.button(e
+                        -> {
+                    refreshList();
+                }));
             }
         });
+        refreshList();
+    }
+
+    private void refreshList() {
+        long startTime = System.currentTimeMillis();
         // create a RestClient to the specific URL
         RestClient restClient = RestClient.create()
                 .method("GET")
@@ -40,7 +64,7 @@ public class ListPresenter {
                 .path("/mobileTest");
 
         // create a custom Converter that is able to parse the response into a list of objects
-        InputStreamIterableInputConverter<Item> converter = new ItemsIterableInputConverter<>(Item.class);
+        InputStreamIterableInputConverter converter = new ItemsIterableInputConverter();
         // retrieve a list from the DataProvider
         GluonObservableList<Item> items = DataProvider.retrieveList(restClient.createListDataReader(converter));
         ListView<Item> lvItems = new ListView<>(items);
@@ -48,14 +72,16 @@ public class ListPresenter {
             @Override
             protected void updateItem(Item item, boolean empty) {
                 super.updateItem(item, empty);
-                
-                if(!empty) {
-                    setText(item.getValue()+"\n"+item.getDate());
+
+                if (!empty) {
+                    setText(item.getValue() + "\n" + item.getDate());
                 } else {
                     setText(null);
                 }
             }
         });
         list.setCenter(lvItems);
+        long endTime = System.currentTimeMillis();
+        this.lastLoadMs.set((int) (endTime - startTime));
     }
 }
