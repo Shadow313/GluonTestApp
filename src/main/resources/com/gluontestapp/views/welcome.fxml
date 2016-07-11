@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.gluonhq.charm.glisten.control.Icon?>
+<?import com.gluonhq.charm.glisten.mvc.View?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.canvas.Canvas?>
+
+<View xmlns:fx="http://javafx.com/fxml/1" fx:id="welcome" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="350.0" stylesheets="@welcome.css" xmlns="http://javafx.com/javafx/8" fx:controller="com.gluontestapp.views.WelcomePresenter">
+   <center>
+      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="15.0" BorderPane.alignment="CENTER">
+         <children>
+             <HBox alignment="CENTER" spacing="10">
+                 <children>
+                     <Button text="Draw!" onAction="#onDraw"/>
+                     <Canvas fx:id="cnvsWelcome" width="200" height="200"  />   
+                 </children>
+             </HBox>  
+            <Label fx:id="label" text="Hello JavaFX World!" />
+            <Button mnemonicParsing="false" onAction="#buttonClick" text="Change the World!"/>
+         </children>
+      </VBox>
+   </center>
+</View>
